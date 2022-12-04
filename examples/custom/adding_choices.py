@@ -13,7 +13,7 @@ import time
 import math
 #import keras
 import traceback
-from minimap_revision import MinimapRevision
+from sc2.minimap_revision import MinimapRevision
 
 #os.environ["SC2PATH"] = '/starcraftstuff/StarCraftII/'
 HEADLESS = False
