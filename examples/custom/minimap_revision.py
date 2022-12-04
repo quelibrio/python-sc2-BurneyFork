@@ -1,6 +1,5 @@
 import numpy as np
 import cv2
-from sc2.constants import PYLON
 
 class MinimapRevision():
     def __init__(self, game):

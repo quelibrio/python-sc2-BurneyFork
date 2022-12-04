@@ -14,7 +14,7 @@ import time
 import math
 #import keras
 import traceback
-#from sc2.minimap_revision import MinimapRevision
+from minimap_revision import MinimapRevision
 
 #os.environ["SC2PATH"] = '/starcraftstuff/StarCraftII/'
 HEADLESS = False
@@ -163,8 +163,8 @@ class SentdeBot(BotAI):
 
     async def intel(self):
         pass
-        # minimap=MinimapRevision(self)
-        # game_data = minimap.map_data
+        minimap=MinimapRevision(self)
+        game_data = minimap.map_data
         # #map_data = np.copy(self._game_info.terrain_height)
         # draw_dict = {
         #              UnitTypeId.NEXUS: [15, (0, 255, 0)],
