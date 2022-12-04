@@ -1,10 +1,11 @@
 import sc2
-from sc2 import run_game, maps, Race, Difficulty, Result
+from sc2 import maps
+from sc2.main import run_game
+from sc2.data import Difficulty, Race
 from sc2.player import Bot, Computer
+from sc2.bot_ai import BotAI
 from sc2 import position
-from sc2.constants import NEXUS, PROBE, PYLON, ASSIMILATOR, GATEWAY, \
- CYBERNETICSCORE, STARGATE, VOIDRAY, SCV, DRONE, ROBOTICSFACILITY, OBSERVER, \
- ZEALOT, STALKER
+from sc2.ids.unit_typeid import UnitTypeId
 import random
 import cv2
 import numpy as np
@@ -13,13 +14,13 @@ import time
 import math
 #import keras
 import traceback
-from sc2.minimap_revision import MinimapRevision
+#from sc2.minimap_revision import MinimapRevision
 
 #os.environ["SC2PATH"] = '/starcraftstuff/StarCraftII/'
 HEADLESS = False
 
 
-class SentdeBot(sc2.BotAI):
+class SentdeBot(BotAI):
     def __init__(self, use_model=False, title=1):
         self.MAX_WORKERS = 50
         self.do_something_after = 0
@@ -119,17 +120,17 @@ class SentdeBot(sc2.BotAI):
         for scout in to_be_removed:
             del self.scouts_and_spots[scout]
 
-        if len(self.structures(ROBOTICSFACILITY).ready) == 0:
-            unit_type = PROBE
+        if len(self.structures(UnitTypeId.ROBOTICSFACILITY).ready) == 0:
+            unit_type = UnitTypeId.PROBE
             unit_limit = 1
         else:
-            unit_type = OBSERVER
+            unit_type = UnitTypeId.OBSERVER
             unit_limit = 15
 
         assign_scout = True
 
-        if unit_type == PROBE:
-            for unit in self.all_units(PROBE):
+        if unit_type == UnitTypeId.PROBE:
+            for unit in self.all_units(UnitTypeId.PROBE):
                 if unit.tag in self.scouts_and_spots:
                     assign_scout = False
 
@@ -144,8 +145,8 @@ class SentdeBot(sc2.BotAI):
                                 active_locations = [self.scouts_and_spots[k] for k in self.scouts_and_spots]
 
                                 if location not in active_locations:
-                                    if unit_type == PROBE:
-                                        for unit in self.all_units(PROBE):
+                                    if unit_type == UnitTypeId.PROBE:
+                                        for unit in self.all_units(UnitTypeId.PROBE):
                                             if unit.tag in self.scouts_and_spots:
                                                 continue
 
@@ -157,23 +158,24 @@ class SentdeBot(sc2.BotAI):
 
         for obs in self.all_units(unit_type):
             if obs.tag in self.scouts_and_spots:
-                if obs in [probe for probe in self.all_units(PROBE)]:
+                if obs in [probe for probe in self.all_units(UnitTypeId.PROBE)]:
                     await self.do(obs.move(self.random_location_variance(self.scouts_and_spots[obs.tag])))
 
     async def intel(self):
-        minimap=MinimapRevision(self)
-        game_data = minimap.map_data
+        pass
+        # minimap=MinimapRevision(self)
+        # game_data = minimap.map_data
         # #map_data = np.copy(self._game_info.terrain_height)
         # draw_dict = {
-        #              NEXUS: [15, (0, 255, 0)],
-        #              PYLON: [3, (20, 235, 0)],
-        #              PROBE: [1, (55, 200, 0)],
-        #              ASSIMILATOR: [2, (55, 200, 0)],
-        #              GATEWAY: [3, (200, 100, 0)],
-        #              CYBERNETICSCORE: [3, (150, 150, 0)],
-        #              STARGATE: [5, (255, 0, 0)],
-        #              ROBOTICSFACILITY: [5, (215, 155, 0)],
-        #              #VOIDRAY: [3, (255, 100, 0)],
+        #              UnitTypeId.NEXUS: [15, (0, 255, 0)],
+        #              UnitTypeId.PYLON: [3, (20, 235, 0)],
+        #              UnitTypeId.PROBE: [1, (55, 200, 0)],
+        #              UnitTypeId.ASSIMILATOR: [2, (55, 200, 0)],
+        #              UnitTypeId.GATEWAY: [3, (200, 100, 0)],
+        #              UnitTypeId.CYBERNETICSCORE: [3, (150, 150, 0)],
+        #              UnitTypeId.STARGATE: [5, (255, 0, 0)],
+        #              UnitTypeId.ROBOTICSFACILITY: [5, (215, 155, 0)],
+        #              UnitTypeId.VOIDRAY: [3, (255, 100, 0)],
         #             }
 
         # for unit_type in draw_dict:
@@ -208,11 +210,11 @@ class SentdeBot(sc2.BotAI):
         #         else:
         #             cv2.circle(game_data, (int(pos[0]), int(pos[1])), 3, (50, 0, 215), -1)
 
-        # for obs in self.all_units(OBSERVER).ready:
+        # for obs in self.all_units(UnitTypeId.OBSERVER).ready:
         #     pos = obs.position
         #     cv2.circle(game_data, (int(pos[0]), int(pos[1])), 1, (255, 255, 255), -1)
 
-        # for vr in self.all_units(VOIDRAY).ready:
+        # for vr in self.all_units(UnitTypeId.VOIDRAY).ready:
         #     pos = vr.position
         #     cv2.circle(game_data, (int(pos[0]), int(pos[1])), 3, (255, 100, 0), -1)
 
@@ -231,7 +233,7 @@ class SentdeBot(sc2.BotAI):
 
         # plausible_supply =  self.supply_cap / 200.0
 
-        # worker_weight = len(self.all_units(PROBE)) / (self.supply_cap-self.supply_left)
+        # worker_weight = len(self.all_units(UnitTypeId.PROBE)) / (self.supply_cap-self.supply_left)
 
         # if worker_weight > 1.0:
         #     worker_weight = 1.0
