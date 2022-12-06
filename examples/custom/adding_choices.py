@@ -261,77 +261,77 @@ class SentdeBot(BotAI):
             return self.enemy_start_locations[0]
 
     async def build_scout(self):
-        for rf in self.structures(ROBOTICSFACILITY).ready:
-            print(len(self.structures(OBSERVER)), self.time_m/3)
-            if self.can_afford(OBSERVER) and self.supply_left > 0:
-                await self.do(rf.train(OBSERVER))
+        for rf in self.structures(UnitTypeId.ROBOTICSFACILITY).ready:
+            print(len(self.structures(UnitTypeId.OBSERVER)), self.time_m/3)
+            if self.can_afford(UnitTypeId.OBSERVER) and self.supply_left > 0:
+                await self.do(rf.train(UnitTypeId.OBSERVER))
                 break
 
     async def build_worker(self):
-        nexuses = self.structures(NEXUS).ready
+        nexuses = self.structures(UnitTypeId.NEXUS).ready
         if nexuses.exists:
-            if self.can_afford(PROBE):
-                self.do(random.choice(nexuses).train(PROBE))
+            if self.can_afford(UnitTypeId.PROBE):
+                self.do(random.choice(nexuses).train(UnitTypeId.PROBE))
 
     async def build_zealot(self):
-        gateways = self.structures(GATEWAY).ready
+        gateways = self.structures(UnitTypeId.GATEWAY).ready
         if gateways.exists:
-            if self.can_afford(ZEALOT):
-                await self.do(random.choice(gateways).train(ZEALOT))
+            if self.can_afford(UnitTypeId.ZEALOT):
+                await self.do(random.choice(gateways).train(UnitTypeId.ZEALOT))
 
     async def build_gateway(self):
-        pylon = self.structures(PYLON).ready
-        if len(pylon) > 0 and self.can_afford(GATEWAY) and not self.already_pending(GATEWAY):
-            await self.build(GATEWAY, near=pylon[0])
+        pylon = self.structures(UnitTypeId.PYLON).ready
+        if len(pylon) > 0 and self.can_afford(UnitTypeId.GATEWAY) and not self.already_pending(UnitTypeId.GATEWAY):
+            await self.build(UnitTypeId.GATEWAY, near=pylon[0])
 
     async def build_voidray(self):
-        stargates = self.structures(STARGATE).ready
+        stargates = self.structures(UnitTypeId.STARGATE).ready
         if stargates.exists:
-            if self.can_afford(VOIDRAY):
-                await self.do(random.choice(stargates).train(VOIDRAY))
+            if self.can_afford(UnitTypeId.VOIDRAY):
+                await self.do(random.choice(stargates).train(UnitTypeId.VOIDRAY))
 
     async def build_stalker(self):
-        pylon = self.structures(PYLON).ready
-        gateways = self.structures(GATEWAY).ready
-        cybernetics_cores = self.structures(CYBERNETICSCORE).ready
+        pylon = self.structures(UnitTypeId.PYLON).ready
+        gateways = self.structures(UnitTypeId.GATEWAY).ready
+        cybernetics_cores = self.structures(UnitTypeId.CYBERNETICSCORE).ready
 
         if gateways.exists and cybernetics_cores.exists:
             if self.can_afford(STALKER):
-                await self.do(random.choice(gateways).train(STALKER))
+                await self.do(random.choice(gateways).train(UnitTypeId.STALKER))
 
         if not cybernetics_cores.exists:
-            if self.structures(GATEWAY).ready.exists:
-                if self.can_afford(CYBERNETICSCORE) and not self.already_pending(CYBERNETICSCORE):
-                    await self.build(CYBERNETICSCORE, near=pylon[0])
+            if self.structures(UnitTypeId.GATEWAY).ready.exists:
+                if self.can_afford(UnitTypeId.CYBERNETICSCORE) and not self.already_pending(UnitTypeId.CYBERNETICSCORE):
+                    await self.build(UnitTypeId.CYBERNETICSCORE, near=pylon[0])
 
     async def build_assimilator(self):
-        for nexus in self.structures(NEXUS).ready:
+        for nexus in self.structures(UnitTypeId.NEXUS).ready:
             vaspenes = self.vespene_geyser.closer_than(15.0, nexus)
             for vaspene in vaspenes:
-                if not self.can_afford(ASSIMILATOR):
+                if not self.can_afford(UnitTypeId.ASSIMILATOR):
                     break
                 worker = self.select_build_worker(vaspene.position)
                 if worker is None:
                     break
-                if not self.structures(ASSIMILATOR).closer_than(1.0, vaspene).exists:
-                    self.do(worker.build(ASSIMILATOR, vaspene))
+                if not self.structures(UnitTypeId.ASSIMILATOR).closer_than(1.0, vaspene).exists:
+                    self.do(worker.build(UnitTypeId.ASSIMILATOR, vaspene))
 
     async def build_stargate(self):
-        if self.structures(PYLON).ready.exists:
-            pylon = self.structures(PYLON).ready[0]
-            if self.structures(CYBERNETICSCORE).ready.exists:
-                if self.can_afford(STARGATE) and not self.already_pending(STARGATE):
-                    await self.build(STARGATE, near=pylon)
+        if self.structures(UnitTypeId.PYLON).ready.exists:
+            pylon = self.structures(UnitTypeId.PYLON).ready[0]
+            if self.structures(UnitTypeId.CYBERNETICSCORE).ready.exists:
+                if self.can_afford(UnitTypeId.STARGATE) and not self.already_pending(UnitTypeId.STARGATE):
+                    await self.build(UnitTypeId.STARGATE, near=pylon)
 
     async def build_pylon(self):
-            nexuses = self.structures(NEXUS).ready
+            nexuses = self.structures(UnitTypeId.NEXUS).ready
             if nexuses.exists:
-                if self.can_afford(PYLON):
-                    await self.build(PYLON, near=self.structures(NEXUS).first.position.towards(self.game_info.map_center, 5))
+                if self.can_afford(UnitTypeId.PYLON):
+                    await self.build(UnitTypeId.PYLON, near=self.structures(UnitTypeId.NEXUS).first.position.towards(self.game_info.map_center, 5))
 
     async def expand(self):
         try:
-            if self.can_afford(NEXUS):
+            if self.can_afford(UnitTypeId.NEXUS):
                 await self.expand_now()
         except Exception as e:
             print(str(e))
